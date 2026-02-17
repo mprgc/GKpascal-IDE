@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="si">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pascal Web Editor & Runner</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Top Navigation Bar - FIXED */
+        .navbar {
+            background-color: #333;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #444;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-weight: bold;
+            color: #00bcd4;
+            font-size: 1.2rem;
+        }
+
+        .logo span {
+            color: #ffffff;
+        }
+
+        .menu-btn {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .menu-btn:hover {
+            color: #00bcd4;
+        }
+
+        /* Mobile View Tabs */
+        .mobile-tabs {
+            display: none;
+            background-color: #252526;
+            border-bottom: 1px solid #444;
+            position: sticky;
+            top: 51px;
+            z-index: 999;
+        }
+
+        .mobile-tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            color: #aaa;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .mobile-tab-btn.active {
+            color: #00bcd4;
+            border-bottom: 2px solid #00bcd4;
+            background-color: #2d2d30;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: #252526;
+            transition: 0.3s ease;
+            z-index: 2000;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: #333;
+            font-weight: bold;
+            color: #00bcd4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #ccc;
+        }
+
+        .sidebar-item:hover {
+            background-color: #3e3e42;
+            color: white;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: #252526;
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            border-radius: 12px;
+            overflow-y: auto;
+            color: #e0e0e0;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+            border: 1px solid #444;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background-color: #1a73e8;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-body h2 {
+            color: #1a73e8;
+            margin-top: 0;
+        }
+
+        .modal-body ul {
+            padding-left: 20px;
+            color: #ccc;
+        }
+
+        .modal-body ul li {
+            margin-bottom: 5px;
+        }
+
+        .developer-info {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            border-top: 1px solid #444;
+            padding-top: 20px;
+        }
+
+        .dev-text {
+            flex: 1;
+        }
+
+        .dev-img {
+            width: 120px;
+            height: 150px;
+            background-color: #333;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1500;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-clear {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .run-btn {
+            background-color: #4caf50;
+            border: none;
+            color: white;
+            padding: 8px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Workspace */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #333;
+            overflow: hidden;
+        }
+
+        .tab-bar {
+            background-color: #252526;
+            padding: 8px 15px;
+            font-size: 13px;
+            color: #aaa;
+            border-bottom: 1px solid #1e1e1e;
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            display: flex;
+            background-color: #1e1e1e;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .line-numbers {
+            width: 45px;
+            background-color: #1e1e1e;
+            color: #858585;
+            padding: 20px 5px;
+            text-align: right;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            line-height: 1.5;
+            user-select: none;
+            border-right: 1px solid #333;
+            overflow: hidden;
+        }
+
+        #code-editor {
+            flex: 1;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            border: none;
+            padding: 20px 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+            white-space: pre;
+            overflow: auto;
+        }
+
+        .terminal-container {
+            width: 40%;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .terminal-header {
+            background-color: #333;
+            color: #ddd;
+            padding: 8px 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        #terminal-output {
+            flex: 1;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #00ff00;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            outline: none;
+        }
+
+        #terminal-input-hidden {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: #00ff00;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        @media (max-width: 900px) {
+            .mobile-tabs { display: flex; }
+            .workspace { position: relative; }
+            .editor-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; border-right: none; }
+            .terminal-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
+            body.show-terminal .editor-container { z-index: 5; visibility: hidden; }
+            body.show-terminal .terminal-container { z-index: 10; visibility: visible; }
+            
+            /* Hide text on mobile nav buttons */
+            .btn-clear span, .run-btn span { display: none; }
+            .btn-clear, .run-btn { padding: 8px 12px; }
+        }
+
+        /* PDF Modal Styles */
+        #pdf-modal .modal-card {
+            max-width: 90%;
+            height: 90vh;
+        }
+    </style>
+</head>
+
+<body class="show-editor">
+
+    <input type="file" id="file-input" style="display: none;" accept=".pas,.txt" onchange="handleFileSelect(event)">
+
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">GK PASCAL <span>IDE</span></div>
+            <button class="menu-btn" onclick="toggleSidebar()">✕</button>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-item" onclick="document.getElementById('file-input').click(); toggleSidebar();">
+                <span>📂</span> Open File
+            </div>
+            <div class="sidebar-item" onclick="saveCode(); toggleSidebar();">
+                <span>💾</span> Save Program
+            </div>
+            <div class="sidebar-item" onclick="showLearnModal(); toggleSidebar();">
+                <span>📚</span> Learn Pascal
+            </div>
+            <div class="sidebar-item" onclick="showAboutModal(); toggleSidebar();">
+                <span>ℹ️</span> About Us
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal-overlay" onclick="hideAboutModal()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span>About Us</span>
+                <span style="cursor: pointer;" onclick="hideAboutModal()">✕</span>
+            </div>
+            <div class="modal-body">
+                <h2>Welcome to GK PASCAL IDE 1</h2>
+                <p>මෙම මෘදුකාංගය නිර්මාණය කර ඇත්තේ 11 ශ්‍රේණිය පාසල් යන සිසුන්ට ICT විෂයේ ඇති ක්‍රමලේක ලිවීම (Programming) යන පාඩමේ භාවිතා වන Pascal කේත පරිගණකයක් නැති උවත් Smart Phone එකකින් උවත් ඉතා පහසුවෙන් සහ නිවැරදිව පරීක්ෂා කර Output එක බැලීමට සහ ඉගෙන ගැනීමටයි. <br> <br> Free Pascal, Turbo Pascal වගේ සංකීර්ණ මෘදුකාංග වලට නොගොස් ඕනෑම Smart ජංගම දුරකතනයක ක්‍රියාකරන මෙම සරල App එක මගින් ඔබේ Pascal Code හදුනාගෙන එය JS වලට හරවා Terminal එකෙන් ප්‍රතිදානය පෙන්වයි.</p>
+                <ul>
+                    <li>✓ Real-time Rendering</li>
+                    <li>✓ Simple & User-friendly UI</li>
+                    <li>✓ Only Educational Support</li>
+                    <li>✓ Case-sensitive නෙවෙයි.</li>
+                </ul>
+                <p>මෙහිදී පහත Simple Pascal කේත පමණක් සාර්ථකව ක්‍රියාත්මක කළ හැක:</p>
+                <ul>
+                    <li>Simple "Hello World"</li>
+                    <li>Write and Read</li>
+                    <li>For loop (to-do) and (downto-do)</li>
+                    <li>While do</li>
+                    <li>Repeat until</li>
+                    <li>If-then</li>
+                    <li>If-then-else</li>
+                    <li>Nested If</li>
+                    <li>Array</li>
+                </ul>
+
+                <div class="developer-info">
+                    <div class="dev-text">
+                        <h3 style="color: #1a73e8; margin-bottom: 5px;">Developer</h3>
+                        <p><strong>Name:</strong> Gayan Karunathilaka (ICT Sir)</p>
+                        <p><strong>Version:</strong> 1.0 (2026)</p>
+                        <p style="font-size: 0.9rem; line-height: 1.4;">මගේ ICT පන්ති වලට සම්බන්ධ වීමට 071 327 6655 අංකයට <strong>class</strong> ලෙස කෙටි පණිවිඩයක් යොමු කරන්න.</p>
+                        <p>🔴 Web: <a href="https://sites.google.com/view/gayan-karunathilaka-ict-class/home" style="color: #1a73e8; text-decoration: none;">Class Website</a></p>
+                    </div>
+                    <img src="sir.jpg" alt="Developer" class="dev-img">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Learn Pascal Modal (PDF Viewer) -->
+    <div id="pdf-modal" class="modal-overlay" onclick="hideLearnModal()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span>Learn Pascal</span>
+                <span style="cursor: pointer;" onclick="hideLearnModal()">✕</span>
+            </div>
+            <div class="modal-body" style="padding: 0; height: calc(100% - 50px);">
+                <!-- REPLACE THE LINK BELOW WITH YOUR ACTUAL PDF LINK -->
+                <iframe id="pdf-viewer" src="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" width="100%" height="100%" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar">
+        <div class="nav-left">
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="logo">GK PASCAL <span>IDE</span></div>
+        </div>
+        <div class="nav-right">
+            <button class="btn-clear" onclick="clearCode()">🗑️ <span>Clear</span></button>
+            <button class="run-btn" onclick="executePascal()">▶ <span>RUN</span></button>
+        </div>
+    </div>
+
+    <div class="mobile-tabs">
+        <button id="tab-editor" class="mobile-tab-btn active" onclick="switchMobileTab('editor')"><span><></span> EDITOR</button>
+        <button id="tab-terminal" class="mobile-tab-btn" onclick="switchMobileTab('terminal')"> <span>📺</span> TERMINAL</button>
+    </div>
+
+    <div class="workspace">
+        <div id="editor-view" class="editor-container">
+            <div class="tab-bar">main.pas</div>
+            <div class="editor-wrapper">
+                <div id="line-numbers" class="line-numbers">1</div>
+                <textarea id="code-editor" spellcheck="false"></textarea>
+            </div>
+        </div>
+
+        <div id="terminal-view" class="terminal-container">
+            <div class="terminal-header">Terminal Output</div>
+            <div id="terminal-output" tabindex="0">GK Pascle Compiler<br>C:\Users\Pascal\Documents> <span class="cursor"></span></div>
+            <input type="text" id="terminal-input-hidden">
+        </div>
+    </div>
+
+    <script>
+        const editor = document.getElementById('code-editor');
+        const lineNumbers = document.getElementById('line-numbers');
+        const terminalOutput = document.getElementById('terminal-output');
+        const hiddenInput = document.getElementById('terminal-input-hidden');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        let isWaitingForInput = false;
+        let inputResolver = null;
+        let currentInputBuffer = "";
+        let terminalHistory = "";
+
+        const defaultCode = "PROGRAM Hello;\nBIGEN\n  WRITELN('Hello, Gayan Sir...!');\nEND.";
+
+        function toggleSidebar() { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }
+        function showAboutModal() { document.getElementById('about-modal').style.display = 'flex'; }
+        function hideAboutModal() { document.getElementById('about-modal').style.display = 'none'; }
+        
+        function showLearnModal() { document.getElementById('pdf-modal').style.display = 'flex'; }
+        function hideLearnModal() { document.getElementById('pdf-modal').style.display = 'none'; }
+
+        function switchMobileTab(tab) {
+            if (tab === 'editor') {
+                document.body.classList.remove('show-terminal');
+                document.getElementById('tab-editor').classList.add('active');
+                document.getElementById('tab-terminal').classList.remove('active');
+            } else {
+                document.body.classList.add('show-terminal');
+                document.getElementById('tab-terminal').classList.add('active');
+                document.getElementById('tab-editor').classList.remove('active');
+            }
+        }
+
+        function updateLineNumbers() {
+            const lines = editor.value.split('\n');
+            let displayNumbers = '';
+            for (let i = 1; i <= lines.length; i++) displayNumbers += i + '\n';
+            lineNumbers.innerText = displayNumbers;
+            lineNumbers.scrollTop = editor.scrollTop;
+        }
+
+        window.onload = function () {
+            editor.value = defaultCode;
+            updateLineNumbers();
+        };
+
+        editor.addEventListener('scroll', () => { lineNumbers.scrollTop = editor.scrollTop; });
+        editor.addEventListener('input', updateLineNumbers);
+
+        terminalOutput.addEventListener('click', () => { if (isWaitingForInput) hiddenInput.focus(); });
+        hiddenInput.addEventListener('input', () => { if (isWaitingForInput) { currentInputBuffer = hiddenInput.value; renderTerminal(); } });
+        hiddenInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && isWaitingForInput) {
+                const val = hiddenInput.value;
+                isWaitingForInput = false;
+                hiddenInput.value = "";
+                terminalHistory += currentInputBuffer + "\n";
+                currentInputBuffer = "";
+                renderTerminal();
+                if (inputResolver) inputResolver(val);
+            }
+        });
+
+        function renderTerminal() {
+            terminalOutput.innerHTML = terminalHistory + currentInputBuffer + '<span class="cursor"></span>';
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        async function getTerminalInput() {
+            isWaitingForInput = true;
+            hiddenInput.focus();
+            return new Promise(resolve => { inputResolver = resolve; });
+        }
+
+        function clearCode() { if (confirm("කේතය මකා දැමීමට අවශ්‍යද?")) { editor.value = ""; updateLineNumbers(); } }
+        function saveCode() {
+            const blob = new Blob([editor.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'program.pas'; a.click();
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => { editor.value = e.target.result; updateLineNumbers(); };
+            reader.readAsText(file);
+        }
+
+        async function executePascal() {
+            if (window.innerWidth <= 900) switchMobileTab('terminal');
+            terminalHistory = " 🤖 Compiling...\n------------------------------\n";
+            renderTerminal();
+
+            const fullCode = editor.value;
+            let cleanCode = fullCode.replace(/\{[\s\S]*?\}/g, '');
+            let rawLines = cleanCode.split('\n').map(l => l.trim()).filter(l => l !== "");
+            
+            let lines = rawLines.map(l => {
+                let temp = l;
+                ['PROGRAM', 'VAR', 'BEGIN', 'END', 'IF', 'THEN', 'ELSE', 'FOR', 'TO', 'DOWNTO', 'DO', 'WHILE', 'REPEAT', 'UNTIL', 'WRITE', 'WRITELN', 'READ', 'READLN', 'CASE', 'OF'].forEach(k => {
+                    const regex = new RegExp('^' + k + '\\b', 'i');
+                    temp = temp.replace(regex, k);
+                });
+                return temp;
+            });
+
+            let vars = {};
+            let varTypes = {};
+            let arrayConfigs = {}; 
+
+            let varSectionMatch = cleanCode.match(/VAR\s+([\s\S]+?)(?=\s+BEGIN)/i);
+            if (varSectionMatch) {
+                varSectionMatch[1].split(';').forEach(line => {
+                    let parts = line.split(':');
+                    if (parts.length > 1) {
+                        let names = parts[0].split(',');
+                        let typeRaw = parts[1].trim().toLowerCase();
+                        
+                        names.forEach(n => {
+                            let upName = n.trim().toUpperCase();
+                            if (!upName) return;
+
+                            let arrayMatch = typeRaw.match(/array\s*\[\s*(\d+)\s*\.\.\s*(\d+)\s*\]\s*of\s*(\w+)/i);
+                            if (arrayMatch) {
+                                let low = parseInt(arrayMatch[1]);
+                                let high = parseInt(arrayMatch[2]);
+                                let baseType = arrayMatch[3].toLowerCase();
+                                arrayConfigs[upName] = { low, high, baseType };
+                                vars[upName] = {}; 
+                                for (let i = low; i <= high; i++) {
+                                    vars[upName][i] = (baseType === 'char' || baseType === 'string') ? "" : 0;
+                                }
+                            } else {
+                                varTypes[upName] = typeRaw;
+                                vars[upName] = (typeRaw === 'char' || typeRaw === 'string') ? "" : (typeRaw === 'real' ? 0.0 : 0);
+                            }
+                        });
+                    }
+                });
+            }
+
+            const evaluateExpr = (expr) => {
+                if (!expr) return 0;
+                let processed = expr.trim();
+                
+                processed = processed.replace(/(\w+)\s*\[\s*([^\]]+)\s*\]/g, (match, arrName, indexExpr) => {
+                    let upArr = arrName.toUpperCase();
+                    if (vars[upArr] !== undefined && typeof vars[upArr] === 'object') {
+                        let idx = evaluateExpr(indexExpr);
+                        return vars[upArr][idx] !== undefined ? vars[upArr][idx] : 0;
+                    }
+                    return match;
+                });
+
+                processed = processed.replace(/'([^']*)'/g, '"$1"')
+                    .replace(/<>/g, '!=')
+                    .replace(/(^|[^<>:])=/g, '$1==')
+                    .replace(/\bDIV\b/gi, '/')
+                    .replace(/\bMOD\b/gi, '%')
+                    .replace(/\bAND\b/gi, '&&')
+                    .replace(/\bOR\b/gi, '||');
+
+                Object.keys(vars).forEach(v => {
+                    if (typeof vars[v] !== 'object') {
+                        const regex = new RegExp('\\b' + v + '\\b', 'gi');
+                        let val = vars[v];
+                        processed = processed.replace(regex, typeof val === 'string' ? `"${val}"` : val);
+                    }
+                });
+
+                try { return eval(processed); } catch (e) { return 0; }
+            };
+
+            const runStatement = async (line) => {
+                let cmd = line.replace(/;$/, '').trim();
+                if (!cmd || cmd.toUpperCase() === 'END') return;
+
+                if (cmd.toUpperCase().startsWith('WRITE')) {
+                    let m = cmd.match(/^(?:WRITE|WRITELN)\s*\((.*)\)$/i);
+                    if (m) {
+                        let parts = m[1].split(/,(?=(?:(?:[^']*'){2})*[^']*$)/);
+                        let output = "";
+                        parts.forEach(p => {
+                            p = p.trim();
+                            if (p.startsWith("'") && p.endsWith("'")) output += p.slice(1, -1);
+                            else output += evaluateExpr(p);
+                        });
+                        terminalHistory += output + (cmd.toUpperCase().startsWith('WRITELN') ? "\n" : "");
+                        renderTerminal();
+                    }
+                } else if (cmd.toUpperCase().startsWith('READ')) {
+                    let m = cmd.match(/^(?:READ|READLN)\s*\((.*)\)$/i);
+                    if (m) {
+                        let vNames = m[1].split(',').map(v => v.trim());
+                        for (let v of vNames) {
+                            let input = await getTerminalInput();
+                            
+                            let arrMatch = v.match(/(\w+)\s*\[\s*(.+)\s*\]/i);
+                            if (arrMatch) {
+                                let upArr = arrMatch[1].toUpperCase();
+                                let idx = evaluateExpr(arrMatch[2]);
+                                if (vars[upArr] && vars[upArr][idx] !== undefined) {
+                                    let baseType = arrayConfigs[upArr].baseType;
+                                    vars[upArr][idx] = (baseType === 'char' || baseType === 'string') ? input : Number(input);
+                                }
+                            } else {
+                                let up = v.toUpperCase();
+                                vars[up] = (varTypes[up] === 'char' || varTypes[up] === 'string') ? input : Number(input);
+                            }
+                        }
+                    }
+                } else if (cmd.includes(':=')) {
+                    let parts = cmd.split(':=');
+                    let target = parts[0].trim();
+                    let value = evaluateExpr(parts[1]);
+                    
+                    let arrMatch = target.match(/(\w+)\s*\[\s*(.+)\s*\]/i);
+                    if (arrMatch) {
+                        let upArr = arrMatch[1].toUpperCase();
+                        let idx = evaluateExpr(arrMatch[2]);
+                        if (vars[upArr] && vars[upArr][idx] !== undefined) {
+                            vars[upArr][idx] = value;
+                        }
+                    } else {
+                        vars[target.toUpperCase()] = value;
+                    }
+                }
+            };
+
+            const getBlock = (idx) => {
+                if (idx >= lines.length) return { size: 0, start: idx, end: idx };
+                let line = lines[idx];
+
+                if (line.toUpperCase() === 'BEGIN' || line.toUpperCase().startsWith('CASE')) {
+                    let depth = 1, k = idx + 1;
+                    while (k < lines.length && depth > 0) {
+                        let up = lines[k].toUpperCase();
+                        if (up === 'BEGIN' || up.startsWith('CASE')) depth++;
+                        if (up.startsWith('END')) depth--;
+                        k++;
+                    }
+                    return { size: k - idx, start: idx, end: k };
+                }
+
+                if (line.toUpperCase().startsWith('IF')) {
+                    let size = 1;
+                    let nextIdx = idx + 1;
+                    let thenBlock = getBlock(nextIdx);
+                    size += thenBlock.size;
+                    
+                    let elseIdx = nextIdx + thenBlock.size;
+                    if (elseIdx < lines.length && lines[elseIdx].toUpperCase() === 'ELSE') {
+                        size += 1;
+                        let elseBlock = getBlock(elseIdx + 1);
+                        size += elseBlock.size;
+                    }
+                    return { size: size, start: idx, end: idx + size };
+                }
+
+                if (line.toUpperCase().startsWith('FOR')) {
+                     let size = 1;
+                     let body = getBlock(idx + 1);
+                     size += body.size;
+                     return { size: size, start: idx, end: idx + size };
+                }
+
+                if (line.toUpperCase().startsWith('WHILE')) {
+                     let size = 1;
+                     let body = getBlock(idx + 1);
+                     size += body.size;
+                     return { size: size, start: idx, end: idx + size };
+                }
+
+                if (line.toUpperCase().startsWith('REPEAT')) {
+                    let k = idx + 1;
+                    while (k < lines.length && !lines[k].toUpperCase().startsWith('UNTIL')) {
+                        let block = getBlock(k);
+                        k = block.end;
+                    }
+                    return { size: (k + 1) - idx, start: idx, end: k + 1 };
+                }
+
+                return { size: 1, start: idx, end: idx + 1 };
+            };
+
+            const interpret = async (start, end) => {
+                let i = start;
+                while (i < end) {
+                    let line = lines[i];
+                    let upper = line.toUpperCase();
+                    if (!line || upper.startsWith('PROGRAM') || upper.startsWith('VAR') || upper === 'BEGIN' || upper.startsWith('END.')) { i++; continue; }
+
+                    if (upper.startsWith('IF')) {
+                        let condStr = line.match(/IF\s+(.+)\s+THEN/i)?.[1];
+                        let isTrue = evaluateExpr(condStr);
+                        let thenBlock = getBlock(i + 1);
+                        let elseIdx = (i + 1) + thenBlock.size;
+                        let hasElse = elseIdx < end && lines[elseIdx].toUpperCase() === 'ELSE';
+
+                        if (isTrue) await interpret(thenBlock.start, thenBlock.end);
+                        else if (hasElse) {
+                            let elseBlock = getBlock(elseIdx + 1);
+                            await interpret(elseBlock.start, elseBlock.end);
+                        }
+                        i = hasElse ? (elseIdx + 1 + getBlock(elseIdx + 1).size) : elseIdx;
+                        continue;
+                    }
+
+                    if (upper.startsWith('FOR')) {
+                        let isDownto = upper.includes('DOWNTO');
+                        let regex = isDownto ? /FOR\s+(\w+)\s*:=\s*(.+)\s+DOWNTO\s+(.+)\s+DO/i : /FOR\s+(\w+)\s*:=\s*(.+)\s+TO\s+(.+)\s+DO/i;
+                        let m = line.match(regex);
+                        if (m) {
+                            let vName = m[1].toUpperCase();
+                            let startVal = Math.floor(evaluateExpr(m[2]));
+                            let endVal = Math.floor(evaluateExpr(m[3]));
+                            let loopBlock = getBlock(i + 1);
+                            if (!isDownto) {
+                                for (let val = startVal; val <= endVal; val++) { vars[vName] = val; await interpret(loopBlock.start, loopBlock.end); }
+                            } else {
+                                for (let val = startVal; val >= endVal; val--) { vars[vName] = val; await interpret(loopBlock.start, loopBlock.end); }
+                            }
+                            i = loopBlock.end;
+                            continue;
+                        }
+                    }
+
+                    if (upper.startsWith('WHILE')) {
+                        let condStr = line.match(/WHILE\s+(.+)\s+DO/i)?.[1];
+                        let loopBlock = getBlock(i + 1);
+                        while (evaluateExpr(condStr)) {
+                            await interpret(loopBlock.start, loopBlock.end);
+                        }
+                        i = loopBlock.end;
+                        continue;
+                    }
+
+                    if (upper.startsWith('REPEAT')) {
+                        let repeatBlock = getBlock(i);
+                        let untilLine = lines[repeatBlock.end - 1];
+                        let condStr = untilLine.match(/UNTIL\s+(.+)/i)?.[1];
+                        do {
+                            await interpret(i + 1, repeatBlock.end - 1);
+                        } while (!evaluateExpr(condStr));
+                        i = repeatBlock.end;
+                        continue;
+                    }
+
+                    if (upper.startsWith('CASE')) {
+                        let caseVarExpr = line.match(/CASE\s+(.+)\s+OF/i)?.[1];
+                        let caseVal = evaluateExpr(caseVarExpr);
+                        let caseBlock = getBlock(i);
+                        let found = false;
+                        let k = i + 1;
+                        while (k < (i + caseBlock.size)) {
+                            let l = lines[k];
+                            let upL = l.trim().toUpperCase();
+                            if (upL === 'ELSE') {
+                                if (!found) {
+                                    let elseB = getBlock(k + 1);
+                                    await interpret(elseB.start, elseB.end);
+                                }
+                                break;
+                            }
+                            if (upL.startsWith('END')) break;
+                            if (l.includes(':')) {
+                                let parts = l.split(':');
+                                let condition = parts[0].trim();
+                                let isMatch = false;
+                                if (condition.includes('..')) {
+                                    let range = condition.split('..');
+                                    let low = evaluateExpr(range[0]);
+                                    let high = evaluateExpr(range[1]);
+                                    if (caseVal >= low && caseVal <= high) isMatch = true;
+                                } else if (evaluateExpr(condition) == caseVal) isMatch = true;
+
+                                if (isMatch) {
+                                    found = true;
+                                    let stmt = parts.slice(1).join(':').trim();
+                                    if (stmt) await runStatement(stmt);
+                                }
+                            }
+                            k++;
+                        }
+                        i += caseBlock.size;
+                        continue;
+                    }
+
+                    if (upper === 'ELSE' || upper === 'END' || upper === 'END;' || upper.startsWith('UNTIL')) { i++; continue; }
+                    await runStatement(line);
+                    i++;
+                }
+            };
+
+            try {
+                await interpret(0, lines.length);
+                terminalHistory += "\n------------------------------\nC:\\Users\\Pascal\\Documents> ";
+                renderTerminal();
+            } catch (err) {
+                terminalHistory += "\n<span style='color:red;'>Runtime Error</span>\n";
+                renderTerminal();
+            }
+        }
+    </script>
+</body>
+
+</html>
