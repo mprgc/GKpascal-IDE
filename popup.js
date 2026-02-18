@@ -3,7 +3,7 @@
 // ---------- Setting ----------
 
 let showPopup = true;
-let postImage = "post1.jpg";
+let postImage = "https://mprgc.github.io/GKpascal-IDE/post1.jpg";
 let countdownTime = 5;
 
 // ----------------------------
@@ -207,3 +207,4 @@ if (showPopup === true) {
 
     });
 }
+
