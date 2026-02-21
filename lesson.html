@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pascal Sinhala Guide - Gayan Karunathilaka</title>
+    <style>
+        :root {
+            --primary-color: #00bcd4;
+            --bg-dark: #2d2d30;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --code-bg: #000000;
+            --output-bg: #252526;
+            --accent-color: #00e5ff;
+        }
+
+        /* කොපි කිරීම වැළැක්වීමට අමතර CSS */
+        body {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and Consumer Preview */
+            user-select: none; /* Standard syntax */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 3px solid var(--primary-color);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .intro-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        .example-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .example-header {
+            background-color: #333;
+            padding: 12px 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+
+        .example-header span {
+            background-color: var(--primary-color);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+
+        .content-padding {
+            padding: 15px 20px;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: #dcdcdc;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.95rem;
+            border: 1px solid #333;
+            margin: 10px 0;
+            pointer-events: none; /* කේතය සිලෙක්ට් කිරීම වැළැක්වීමට */
+        }
+
+        .output-box {
+            background-color: var(--output-bg);
+            border: 1px dashed var(--primary-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .output-label {
+            color: var(--primary-color);
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .output-text {
+            color: #a5d6a7;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background-color: #1a1a1a;
+            font-size: 0.8rem;
+            margin-top: 40px;
+        }
+
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            pre { font-size: 0.85rem; }
+            header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;"> <!-- Right click වැළැක්වීමට -->
+
+<header>
+    <h1>Pascal පරිගණක භාෂාව</h1>
+    <p>සිංහල මාර්ගෝපදේශය - සැකසුම: ගයාන් කරුණාතිලක</p>
+</header>
+
+<div class="container">
+    <div class="intro-card">
+        <h2>Pascal යනු කුමක්ද?</h2>
+        <p>Pascal යනු Niklaus Wirth විසින් 1960 වසරේ නිර්මාණය කළ <strong>Structured Programming</strong> භාෂාවකි. Algorithm, programming concepts සහ basic computing principles ඉගැන්වීමට මෙය ඉතා සුදුසුය.</p>
+    </div>
+
+    <!-- 1. Hello World -->
+    <div class="example-card">
+        <div class="example-header"><span>1</span> Hello World උදාහරණය</div>
+        <div class="content-padding">
+            <pre><span class="keyword">PROGRAM</span> first;
+<span class="keyword">BEGIN</span>
+  Write(<span class="string">'Hello Gayan Sir...!'</span>)
+<span class="keyword">END.</span></pre>
+            <div class="output-box">
+                <span class="output-label">ප්‍රතිදානය (Output)</span>
+                <div class="output-text">Hello Gayan Sir...!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Numbers (Calculator) -->
+    <div class="example-card">
+        <div class="example-header"><span>2</span> Numbers (Calculator)</div>
+        <div class="content-padding">
+            <pre><span class="keyword">program</span> Calc;
+<span class="keyword">var</span> x, y, sum: integer;
+<span class="keyword">begin</span>
+  write(<span class="string">'Enter first number: '</span>);
+  readln(x);
+  write(<span class="string">'Enter second number: '</span>);
+  readln(y);
+  sum := x + y;
+  writeln(<span class="string">'Sum = '</span>, sum);
+<span class="keyword">end.</span></pre>
+            <div class="output-box">
+                <span class="output-label">උදාහරණ ප්‍රතිදානය</span>
+                <div class="output-text">Enter first number: 5
+Enter second number: 10
+Sum = 15</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Age Check -->
+    <div class="example-card">
+        <div class="example-header"><span>3</span> Age Check (IF Condition)</div>
+        <div class="content-padding">
+            <pre><span class="keyword">PROGRAM</span> cond1;
+<span class="keyword">VAR</span> age: integer;
+<span class="keyword">BEGIN</span>
+  write(<span class="string">'Please enter your age in years: '</span>);
+  read(age);
+  <span class="keyword">IF</span> age < 18 <span class="keyword">THEN</span>
+    writeln(<span class="string">'Sorry! you are NOT allowed'</span>);
+  
+  writeln(<span class="string">'Thanks'</span>);
+<span class="keyword">END.</span></pre>
+            <div class="output-box">
+                <span class="output-label">උදාහරණ ප්‍රතිදානය</span>
+                <div class="output-text">Please enter your age in years: 16
+Sorry! you are NOT allowed
+Thanks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Pass / Fail -->
+    <div class="example-card">
+        <div class="example-header"><span>4</span> Pass / Fail Example</div>
+        <div class="content-padding">
+            <pre><span class="keyword">PROGRAM</span> cond2;
+<span class="keyword">VAR</span> marks: integer; grade: string;
+<span class="keyword">BEGIN</span>
+  write(<span class="string">'Enter marks: '</span>);
+  read(marks);
+  <span class="keyword">IF</span> marks >= 40 <span class="keyword">THEN</span>
+    grade := <span class="string">'Pass'</span>
+  <span class="keyword">ELSE</span>
+    grade := <span class="string">'Fail'</span>;
+  writeln(<span class="string">'Your grade is '</span>, grade);
+<span class="keyword">END.</span></pre>
+            <div class="output-box">
+                <span class="output-label">ප්‍රතිදානය</span>
+                <div class="output-text">Enter marks: 55
+Your grade is Pass</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Boolean Example -->
+    <div class="example-card">
+        <div class="example-header"><span>5</span> Boolean Example</div>
+        <div class="content-padding">
+            <pre><span class="keyword">PROGRAM</span> cond3;
+<span class="keyword">VAR</span> marks: integer; pass: boolean;
+<span class="keyword">BEGIN</span>
+  write(<span class="string">'Enter marks: '</span>);
+  read(marks);
+  pass := (marks >= 40);
+  <span class="keyword">IF</span> pass <span class="keyword">THEN</span>
+    Writeln(<span class="string">'Pass'</span>)
+  <span class="keyword">ELSE</span>
+    writeln(<span class="string">'Fail'</span>);
+  writeln(<span class="string">'Boolean Value = '</span>, pass);
+<span class="keyword">END.</span></pre>
+            <div class="output-box">
+                <span class="output-label">ප්‍රතිදානය</span>
+                <div class="output-text">Enter marks: 30
+Fail
+Boolean Value = FALSE</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Multiple Grades -->
+    <div class="example-card">
+        <div class="example-header"><span>6</span> Multiple Grade Conditions</div>
+        <div class="content-padding">
+            <pre><span class="keyword">PROGRAM</span> cond4;
+<span class="keyword">VAR</span> marks: integer; grade: char;
+<span class="keyword">BEGIN</span>
+  write(<span class="string">'Enter marks: '</span>);
+  read(marks);
+  <span class="keyword">IF</span> (marks >= 75) <span class="keyword">THEN</span> grade := <span class="string">'A'</span>
+  <span class="keyword">ELSE IF</span> (marks >= 65) <span class="keyword">THEN</span> grade := <span class="string">'B'</span>
+  <span class="keyword">ELSE IF</span> (marks >= 55) <span class="keyword">THEN</span> grade := <span class="string">'C'</span>
+  <span class="keyword">ELSE IF</span> (marks >= 40) <span class="keyword">THEN</span> grade := <span class="string">'S'</span>
+  <span class="keyword">ELSE</span> grade := <span class="string">'F'</span>;
+  writeln(<span class="string">'Your grade is '</span>, grade);
+<span class="keyword">END.</span></pre>
+            <div class="output-box">
+                <span class="output-label">ප්‍රතිදානය</span>
+                <div class="output-text">Enter marks: 68
+Your grade is B</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. For Loop -->
+    <div class="example-card">
+        <div class="example-header"><span>7</span> For Loop Example (1 to 10)</div>
+        <div class="content-padding">
+            <pre><span class="keyword">PROGRAM</span> rep1;
+<span class="keyword">VAR</span> i: integer;
+<span class="keyword">BEGIN</span>
+  <span class="keyword">FOR</span> i := 1 <span class="keyword">TO</span> 10 <span class="keyword">DO</span>
+    writeln(<span class="string">'Hello'</span>);
+<span class="keyword">END.</span></pre>
+            <div class="output-box">
+                <span class="output-label">ප්‍රතිදානය</span>
+                <div class="output-text">Hello (වාර 10 ක් මුද්‍රණය වේ)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. For Loop DownTo -->
+    <div class="example-card">
+        <div class="example-header"><span>8</span> For Loop DownTo Example</div>
+        <div class="content-padding">
+            <pre><span class="keyword">program</span> ForLoopDownToExample;
+<span class="keyword">var</span> i: integer;
+<span class="keyword">begin</span>
+  <span class="keyword">for</span> i := 5 <span class="keyword">downto</span> 1 <span class="keyword">do</span>
+    writeln(i);
+<span class="keyword">end.</span></pre>
+            <div class="output-box">
+                <span class="output-label">ප්‍රතිදානය</span>
+                <div class="output-text">5
+4
+3
+2
+1</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. While Loop -->
+    <div class="example-card">
+        <div class="example-header"><span>9</span> While Loop Example</div>
+        <div class="content-padding">
+            <pre><span class="keyword">program</span> WhileExample;
+<span class="keyword">var</span> count: integer;
+<span class="keyword">begin</span>
+  count := 0;
+  <span class="keyword">while</span> count <= 5 <span class="keyword">do</span>
+  <span class="keyword">begin</span>
+    writeln(<span class="string">'Pascal'</span>);
+    count := count + 1;
+  <span class="keyword">end;</span>
+<span class="keyword">end.</span></pre>
+            <div class="output-box">
+                <span class="output-label">ප්‍රතිදානය</span>
+                <div class="output-text">Pascal (වාර 6 ක් මුද්‍රණය වේ)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. Repeat Until -->
+    <div class="example-card">
+        <div class="example-header"><span>10</span> Repeat Until Loop Example</div>
+        <div class="content-padding">
+            <pre><span class="keyword">program</span> RepeatExample;
+<span class="keyword">var</span> count: integer;
+<span class="keyword">begin</span>
+  count := 0;
+  <span class="keyword">repeat</span>
+    writeln(<span class="string">'Pascal'</span>);
+    count := count + 1;
+  <span class="keyword">until</span> count > 5;
+<span class="keyword">end.</span></pre>
+            <div class="output-box">
+                <span class="output-label">ප්‍රතිදානය</span>
+                <div class="output-text">Pascal (වාර 6 ක් මුද්‍රණය වේ)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. Sum and Average -->
+    <div class="example-card">
+        <div class="example-header"><span>11</span> Sum and Average Example</div>
+        <div class="content-padding">
+            <pre><span class="keyword">PROGRAM</span> sum2;
+<span class="keyword">VAR</span> x, total, count: integer; average: real;
+<span class="keyword">BEGIN</span>
+  total := 0; count := 0;
+  write(<span class="string">'Enter number: '</span>);
+  read(x);
+  <span class="keyword">WHILE</span> (x < 10) <span class="keyword">DO</span>
+  <span class="keyword">BEGIN</span>
+    count := count + 1;
+    total := total + x;
+    write(<span class="string">'Enter number: '</span>);
+    read(x);
+  <span class="keyword">END;</span>
+  average := total / count;
+  writeln;
+  writeln(<span class="string">'Total = '</span>, total);
+  writeln(<span class="string">'Average = '</span>, average:0:1);
+<span class="keyword">END.</span></pre>
+            <div class="output-box">
+                <span class="output-label">උදාහරණ ප්‍රතිදානය</span>
+                <div class="output-text">Enter number: 5
+Enter number: 3
+Enter number: 12
+
+Total = 8
+Average = 4.0</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>&copy; 2025 Pascal Sinhala Tutorial - Gayan Karunathilaka</p>
+    <p>Mobile Optimized Learning Resource</p>
+</footer>
+
+<script>
+    /* කොපි කිරීම, රයිට් ක්ලික් කිරීම සහ කීබෝඩ් ෂෝට්කට් වැළැක්වීමට අදාළ JavaScript */
+    
+    // Right Click වැළැක්වීම
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    // Keydown events වැළැක්වීම (Ctrl+C, Ctrl+U, Ctrl+S, F12 ආදිය)
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123) { // F12
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl+Shift+I
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+Shift+C
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl+Shift+J
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U (View Source)
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) { // Ctrl+S (Save)
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+C (Copy)
+            return false;
+        }
+    };
+</script>
+
+</body>
+</html>
